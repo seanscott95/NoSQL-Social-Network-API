@@ -48,7 +48,8 @@ router.delete("/:userId", (req, res) => {
         .then((user) => {
             !user
                 ? res.status(404).json({ message: 'No user with that ID' })
-                : res.json(user)
+                : Thought.deleteMany({ _id: { $in: user.thought } })
+                
         })
         .then(() => res.json({ message: 'User successfully deleted!' }))
         .catch((err) => res.status(500).json(err));
