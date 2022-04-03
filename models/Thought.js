@@ -6,11 +6,14 @@ const thoughtSchema = new mongoose.Schema(
             type: String,
             required: [true, "Thought required"],
             minlength: 1,
-            maxlength: 280
+            maxlength: 280,
         },
         createdAt: {
             type: Date,
             default: Date.now,
+            get: (date) => {
+                return date.toDateString()
+            },
         },
         username: {
             type: String,
@@ -25,7 +28,7 @@ const thoughtSchema = new mongoose.Schema(
                 type: String,
             required: [true, "Reaction required"],
             minlength: 1,
-            maxlength: 280
+            maxlength: 280,
             },
             username: {
                 type: String,
@@ -34,13 +37,16 @@ const thoughtSchema = new mongoose.Schema(
             createdAt: {
                 type: Date,
                 default: Date.now,
+                get: (date) => {
+                    return date.toDateString()
+                },
             },
         }
-
     },
     {
         toJSON: {
             virtauls: true,
+            getters: true
         },
         id: false,
     }
