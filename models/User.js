@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.virtaul("friendCount", {
-    ref: 'friends',
+    ref: 'user.friends',
     count: true
 });
 
