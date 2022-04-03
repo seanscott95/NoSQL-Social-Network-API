@@ -55,4 +55,12 @@ router.delete("/:userId", (req, res) => {
         .catch((err) => res.status(500).json(err));
 });
 
+// router.post("/:userId/friends/:friendId", (req, res) => {
+
+// })
+
+// router.delete("/:userId/friends/:friendId", (req, res) => {
+    
+// })
+
 module.exports = router;
