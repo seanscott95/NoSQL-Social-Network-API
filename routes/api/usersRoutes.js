@@ -3,7 +3,7 @@ const { User, Thought } = require('../../models');
 
 // Gets all users
 router.get('/', (req, res) => {
-    User.find()
+    User.find({})
         .then((users) => res.json(users))
         .catch((err) => res.status(500).json(err))
 });
@@ -59,7 +59,7 @@ router.delete("/:userId", (req, res) => {
 router.post("/:userId/friends/:friendId", (req, res) => {
     User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $addToSet: { friends: req.params.friendId } },
+        { $push: { friends: req.params.friendId } },
         { runValidators: true, new: true }
     )
         .then((user) =>
@@ -74,7 +74,7 @@ router.post("/:userId/friends/:friendId", (req, res) => {
 router.delete("/:userId/friends/:friendId", (req, res) => {
     User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $pull: { friends: { friendId: req.params.friendId } } },
+        { $pull: { friends: req.params.friendId } },
         { runValidators: true, new: true }
     )
         .then((user) =>
