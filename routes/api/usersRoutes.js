@@ -14,7 +14,7 @@ router.get('/:userId', (req, res) => {
         .select('-__v')
         .then((user) =>
             !user
-                ? res.status(404).json({ message: 'No user with that ID' })
+                ? res.status(404).json({ message: 'No user found with that ID' })
                 : res.json(user)
         )
         .catch((err) => res.status(500).json(err));
@@ -34,9 +34,9 @@ router.put('/:userId', (req, res) => {
         { $set: req.body },
         { runValidators: true, new: true }
     )
-        .then((user) => 
+        .then((user) =>
             !user
-                ? res.status(404).json({ message: 'No user with that ID!'})
+                ? res.status(404).json({ message: 'No user found with that ID!' })
                 : res.json(user)
         )
         .catch((err) => res.status(500).json(err));
@@ -47,20 +47,42 @@ router.delete("/:userId", (req, res) => {
     User.findOneAndDelete({ _id: req.params.userId })
         .then((user) => {
             !user
-                ? res.status(404).json({ message: 'No user with that ID' })
+                ? res.status(404).json({ message: 'No user found with that ID' })
                 : Thought.deleteMany({ _id: { $in: user.thought } })
-                
+
         })
         .then(() => res.json({ message: 'User successfully deleted!' }))
         .catch((err) => res.status(500).json(err));
 });
 
-// router.post("/:userId/friends/:friendId", (req, res) => {
+// Adds a new friend to the users friend list
+router.post("/:userId/friends/:friendId", (req, res) => {
+    User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $addToSet: { friends: req.params.friendId } },
+        { runValidators: true, new: true }
+    )
+        .then((user) =>
+            !user
+                ? res.status(404).json({ message: 'No user found with that ID' })
+                : res.json(user)
+        )
+        .catch((err) => res.status(500).json(err));
+})
 
-// })
-
-// router.delete("/:userId/friends/:friendId", (req, res) => {
-    
-// })
+// Removes a friend from a users friend list
+router.delete("/:userId/friends/:friendId", (req, res) => {
+    User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $pull: { friends: { friendId: req.params.friendId } } },
+        { runValidators: true, new: true }
+    )
+        .then((user) =>
+            !user
+                ? res.status(404).json({ message: 'No user found with that ID' })
+                : res.json(user)
+        )
+        .catch((err) => res.status(500).json(err));
+})
 
 module.exports = router;
