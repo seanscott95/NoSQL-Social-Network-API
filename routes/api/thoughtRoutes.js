@@ -21,7 +21,6 @@ router.get('/:thoughtId', (req, res) => {
 });
 
 // Creates a new thought
-// push the created thought's `_id` to the associated user's `thoughts` array field
 router.post('/', (req, res) => {
     Thought.create(req.body)
         .then((thought) => {
@@ -30,9 +29,10 @@ router.post('/', (req, res) => {
                 { $push: { thoughts: thought } },
                 { new: true, runValidators: true }
             )
-        .then((user) => 
+        })
+        .then((user) =>
             !user
-                ? res.status(404).json({ 
+                ? res.status(404).json({
                     message: 'Thought created but found no user with that ID'
                 })
                 : res.json('Thought created')
@@ -81,7 +81,7 @@ router.post("/:thoughtId/reactions", (req, res) => {
         })
         .then(() => res.json({ message: 'Reaction successfully created' }))
         .catch((err) => res.status(500).json(err));
-})
+});
 
 // Deletes a reaction stored in a thoughts reactions field
 router.delete("/:thoughtId/reactions/:reactionId", (req, res) => {
@@ -97,6 +97,6 @@ router.delete("/:thoughtId/reactions/:reactionId", (req, res) => {
         })
         .then(() => res.json({ message: 'Reaction successfully deleted' }))
         .catch((err) => res.status(500).json(err));
-})
+});
 
 module.exports = router;
