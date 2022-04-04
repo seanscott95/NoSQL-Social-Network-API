@@ -11,6 +11,10 @@ router.get('/', (req, res) => {
 // Gets a single thought
 router.get('/:thoughtId', (req, res) => {
     Thought.findOne({ _id: req.params.thoughtId })
+        .populate({
+            path: 'reactions',
+            select: '-__v'
+        })
         .select('-__v')
         .then((thought) =>
             !thought
@@ -47,6 +51,11 @@ router.put('/:thoughtId', (req, res) => {
         { $set: req.body },
         { runValidators: true, new: true }
     )
+        .populate({
+            path: 'reactions',
+            select: '-__v'
+        })
+        .select('-__v')
         .then((thought) =>
             !thought
                 ? res.status(404).json({ message: 'No thought found with that ID!' })
