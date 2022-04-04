@@ -3,7 +3,7 @@ const { User, Thought } = require('../../models');
 
 // Gets all thoughts
 router.get('/', (req, res) => {
-    Thought.find()
+    Thought.find({})
         .then((thoughts) => res.json(thoughts))
         .catch((err) => res.status(500).json(err))
 })
@@ -14,7 +14,7 @@ router.get('/:thoughtId', (req, res) => {
         .select('-__v')
         .then((thought) =>
             !thought
-                ? res.status(404).json({ message: 'No thought with that ID' })
+                ? res.status(404).json({ message: 'No thought found with that ID' })
                 : res.json(thought)
         )
         .catch((err) => res.status(500).json(err));
@@ -22,11 +22,23 @@ router.get('/:thoughtId', (req, res) => {
 
 // Creates a new thought
 // push the created thought's `_id` to the associated user's `thoughts` array field
-// router.post('/', (req, res) => {
-//     Thought.create(req.body)
-//         .then((thought) => res.json(thought))
-//         .catch((err) => res.status(500).json(err))
-// });
+router.post('/', (req, res) => {
+    Thought.create(req.body)
+        .then((thought) => {
+            return User.findOneAndUpdate(
+                { _id: req.body.userId },
+                { $push: { thoughts: thought } },
+                { new: true, runValidators: true }
+            )
+        .then((user) => 
+            !user
+                ? res.status(404).json({ 
+                    message: 'Thought created but found no user with that ID'
+                })
+                : res.json('Thought created')
+        )
+        .catch((err) => res.status(500).json(err))
+});
 
 // Updates a thought
 router.put('/:thoughtId', (req, res) => {
@@ -35,9 +47,9 @@ router.put('/:thoughtId', (req, res) => {
         { $set: req.body },
         { runValidators: true, new: true }
     )
-        .then((thought) => 
+        .then((thought) =>
             !thought
-                ? res.status(404).json({ message: 'No thought with that ID!'})
+                ? res.status(404).json({ message: 'No thought found with that ID!' })
                 : res.json(thought)
         )
         .catch((err) => res.status(500).json(err));
@@ -48,22 +60,43 @@ router.delete("/:thoughtId", (req, res) => {
     Thought.findOneAndDelete({ _id: req.params.thoughtId })
         .then((thought) => {
             !thought
-                ? res.status(404).json({ message: 'No thought with that ID' })
+                ? res.status(404).json({ message: 'No thought found with that ID' })
                 : res.json(thought)
-                
         })
         .then(() => res.json({ message: 'Thought successfully deleted!' }))
         .catch((err) => res.status(500).json(err));
 });
 
-// Creates a reaction
-// router.post("/:thoughtId/reactions", (req, res) => {
+// Creates a reaction stored in a thoughts reactions field
+router.post("/:thoughtId/reactions", (req, res) => {
+    Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $push: { reactions: req.body } },
+        { runValidators: true, new: true }
+    )
+        .then((thought) => {
+            !thought
+                ? res.status(404).json({ message: 'No thought found with that ID' })
+                : res.json(thought)
+        })
+        .then(() => res.json({ message: 'Reaction successfully created' }))
+        .catch((err) => res.status(500).json(err));
+})
 
-// })
-
-// Deletes a reaction
-// router.delete("/:thoughtId/reactions", (req, res) => {
-
-// })
+// Deletes a reaction stored in a thoughts reactions field
+router.delete("/:thoughtId/reactions/:reactionId", (req, res) => {
+    Thought.findOneAndRemove(
+        { _id: req.params.thoughtId },
+        { $pull: { reactions: { reactionId: req.params.reactionId } } },
+        { runValidators: true, new: true }
+    )
+        .then((thought) => {
+            !thought
+                ? res.status(404).json({ message: 'No thought found with that ID' })
+                : res.json(thought)
+        })
+        .then(() => res.json({ message: 'Reaction successfully deleted' }))
+        .catch((err) => res.status(500).json(err));
+})
 
 module.exports = router;
