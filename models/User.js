@@ -42,9 +42,8 @@ const userSchema = new Schema(
     }
 );
 
-userSchema.virtaul("friendCount", {
-    ref: 'user.friends',
-    count: true
+userSchema.virtaul("friendCount").get(function() {
+    return this.friends.length;
 });
 
 const User = model('User', userSchema);
