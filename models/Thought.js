@@ -61,9 +61,8 @@ const thoughtSchema = new Schema(
     }
 );
 
-thoughtSchema.virtaul("reactionCount", {
-    ref: 'thought.reactions',
-    count: true
+thoughtSchema.virtual("reactionCount").get(function() {
+    return this.reactions.length;
 });
 
 const Thought = model('Thought', thoughtSchema);
