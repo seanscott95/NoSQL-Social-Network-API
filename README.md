@@ -76,4 +76,5 @@
 
 ## Links
 - GitHub: [GitHub](https://github.com/seanscott95/NoSQL-Social-Network-API)
-- Video Demo: [Video-demo]()
+- Video Demo 1 (5min): [Video-demo-1](https://drive.google.com/file/d/1tPBQuYIUq_NJp3XgXrDzNpEoy45Q-6la/view)
+- Video Demo 2 (1:40min): [Video-demo-2](https://drive.google.com/file/d/1xjKqK16SbIZ0c8k6m6d5xSx27lZ2jtIT/view)
