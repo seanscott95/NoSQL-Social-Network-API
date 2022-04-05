@@ -96,7 +96,7 @@ router.delete("/:userId/friends/:friendId", (req, res) => {
         .then((user) =>
             !user
                 ? res.status(404).json({ message: 'No user found with that ID' })
-                : res.json(user)
+                : res.json({ message: 'User successfully removed from your friends list' })
         )
         .catch((err) => res.status(500).json(err));
 })
