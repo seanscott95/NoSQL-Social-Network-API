@@ -34,12 +34,12 @@ router.post('/', (req, res) => {
                 { new: true, runValidators: true }
             )
         })
-        .then((user) =>
-            !user
+        .then((thought) =>
+            !thought
                 ? res.status(404).json({
-                    message: 'Thought created but found no user with that ID'
+                    message: 'No thought found with that ID'
                 })
-                : res.json('Thought created')
+                : res.json({ message: 'Thought successfully created' })
         )
         .catch((err) => res.status(500).json(err))
 });
@@ -70,9 +70,8 @@ router.delete("/:thoughtId", (req, res) => {
         .then((thought) => {
             !thought
                 ? res.status(404).json({ message: 'No thought found with that ID' })
-                : res.json(thought)
+                : res.json({ message: 'Thought successfully deleted!' })
         })
-        .then(() => res.json({ message: 'Thought successfully deleted!' }))
         .catch((err) => res.status(500).json(err));
 });
 
@@ -88,23 +87,21 @@ router.post("/:thoughtId/reactions", (req, res) => {
                 ? res.status(404).json({ message: 'No thought found with that ID' })
                 : res.json(thought)
         })
-        .then(() => res.json({ message: 'Reaction successfully created' }))
         .catch((err) => res.status(500).json(err));
 });
 
 // Deletes a reaction stored in a thoughts reactions field
 router.delete("/:thoughtId/reactions/:reactionId", (req, res) => {
-    Thought.findOneAndRemove(
+    Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
         { $pull: { reactions: { reactionId: req.params.reactionId } } },
-        { runValidators: true, new: true }
+        { new: true }
     )
         .then((thought) => {
             !thought
                 ? res.status(404).json({ message: 'No thought found with that ID' })
-                : res.json(thought)
+                : res.json({ message: 'Reaction successfully deleted' })
         })
-        .then(() => res.json({ message: 'Reaction successfully deleted' }))
         .catch((err) => res.status(500).json(err));
 });
 
