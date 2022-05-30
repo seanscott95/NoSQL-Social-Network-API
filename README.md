@@ -3,7 +3,7 @@
 ## Description
 <p> This application was created for a social network API where users can share their thoughts, react to friends’ thoughts, and create a friend list. Express.js is used for the routing, MongoDB for the database, and Mongoose as the Object Data Model.</p>
 
-<p>This application was created with [Node.js](https://nodejs.org/en/). The modules used include:</p>
+This application was created with [Node.js](https://nodejs.org/en/). The modules used include:
 
 - [express](https://expressjs.com/)
 - [mongoose](https://mongoosejs.com/).
